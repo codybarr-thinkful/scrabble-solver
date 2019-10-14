@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>Scrabble Solver</title>
+
+		<link
+			href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+			rel="stylesheet"
+		/>
+
+		<link href="main.css" rel="stylesheet" />
+	</head>
+	<body class="h-full">
+		<main class="p-4">
+			<h1 class="text-5xl bold">Scrabble Solver</h1>
+			<form id="query">
+				<input
+					id="letters"
+					type="text"
+					class="border p-2 text-base w-64"
+					minlength="2"
+					maxlength="8"
+					placeholder="Enter letters..."
+					autocomplete="off"
+					size="16"
+					required
+				/>
+				<button
+					class="mt-2 block p-2 text-white font-bold bg-gray-900 rounded hover:bg-gray-800"
+					type="submit"
+				>
+					Solve!
+				</button>
+			</form>
+
+			<div id="results" class="mt-2" style="display:none;"></div>
+			<div id="dictionary-modal" style="display:none;">
+				<button
+					id="overlay"
+					class="fixed top-0 right-0 bottom-0 h-full w-full bg-black opacity-75"
+				></button>
+			</div>
+		</main>
+
+		<script src="https://unpkg.com/jquery/dist/jquery.min.js"></script>
+		<script src="index.js"></script>
+	</body>
+</html>

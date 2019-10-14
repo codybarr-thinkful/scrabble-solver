@@ -1,0 +1,7 @@
+.word:not(:last-child):after {
+	content: ', ';
+}
+
+body {
+	background: url('images/seamless-wood-bg.jpg') repeat;
+}
