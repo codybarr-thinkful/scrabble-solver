@@ -1,4 +1,4 @@
-const WORDNIK_BASE_URL = 'http://api.wordnik.com/v4'
+const WORDNIK_BASE_URL = 'https://api.wordnik.com/v4'
 const WORDNIK_API_KEY = `2338333adb3d0d01ff3610e5b16092bef6bc7f2d26944db8b`
 
 const SORT = {
