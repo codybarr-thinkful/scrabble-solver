@@ -1,3 +1,6 @@
+const WORDNIK_BASE_URL = 'http://api.wordnik.com/v4'
+const WORDNIK_API_KEY = `2338333adb3d0d01ff3610e5b16092bef6bc7f2d26944db8b`
+
 const SORT = {
 	SCORE: 'score',
 	LENGTH: 'length'
@@ -34,8 +37,8 @@ const SCRABBLE_VALUES = {
 
 const STORE = {
 	sort: SORT.SCORE, // default sort is by score
-	loading: false,
-	showModal: false,
+	loadingWords: false,
+	loadingDefinition: false,
 	results: []
 }
 
@@ -91,7 +94,7 @@ function generateWordHTML(words) {
 
 // shows/hides loading icon
 function updateLoading() {
-	STORE.loading ? $('#loading').show() : $('#loading').hide()
+	STORE.loadingWords ? $('#loading').show() : $('#loading').hide()
 }
 
 function handleSubmit() {
@@ -104,7 +107,7 @@ function handleSubmit() {
 			.empty()
 
 		// update loading
-		STORE.loading = true
+		STORE.loadingWords = true
 		updateLoading()
 
 		const letters = $('#letters')
@@ -129,15 +132,62 @@ function handleSubmit() {
 				alert(e.message)
 			})
 			.finally(() => {
-				STORE.loading = false
+				STORE.loadingWords = false
 				updateLoading()
 			})
 	})
 }
 
+function generateDictionaryDefinitionHTML(word, definition) {
+	return `<h2 class="text-2xl">${word}</h2>
+		<p class="mt-4">
+			${definition.text}
+		</p>
+		<a href="${definition.wordnikUrl}" class="block mt-2" target="_blank">View more information at Wordnik</a>`
+}
+
+function loadDictionaryDefinition(word) {
+	const params = {
+		api_key: WORDNIK_API_KEY,
+		useCanonical: true
+	}
+	const URL = `${WORDNIK_BASE_URL}/word.json/${word}/definitions?${$.param(
+		params
+	)}`
+
+	fetch(URL)
+		.then(res => {
+			if (res.ok) {
+				return res.json()
+			}
+
+			throw new Error(res.statusText)
+		})
+		.then(res => {
+			console.log(res)
+
+			// update the modal text
+			const output = generateDictionaryDefinitionHTML(word, res[0])
+			$('#modal-body').html(output)
+		})
+		.catch(e => {
+			$('#modal-body').html(`<p class="error">${e.message}</p>`)
+		})
+		.finally(() => {
+			// loading
+			// STORE.loadingDefinition = false
+			// updateLoading()
+		})
+}
+
 function handleWordClick() {
 	$('#results').on('click', '[data-word]', function() {
-		console.log($(this).data('word'))
+		console.log($(this).data('word')) // debugging
+		const word = $(this).data('word')
+
+		$('#modal-body').empty()
+		$('#dictionary-modal').show()
+		loadDictionaryDefinition(word)
 	})
 }
 
@@ -148,6 +198,9 @@ function handleModalDismiss() {
 	})
 
 	// also listen for click of "x" in top right corner of modal
+	$('button#close-modal').on('click', e => {
+		$('#dictionary-modal').hide()
+	})
 
 	// also listen for 'esc' key pressed
 }

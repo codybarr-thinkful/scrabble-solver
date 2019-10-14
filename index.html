@@ -37,14 +37,25 @@
 			</form>
 
 			<div id="results" class="mt-2" style="display:none;"></div>
-			<div id="dictionary-modal" style="display:none;">
-				<button
-					id="overlay"
-					class="fixed top-0 right-0 bottom-0 h-full w-full bg-black opacity-75"
-				></button>
-			</div>
 		</main>
 
+		<div id="dictionary-modal" style="display:none;">
+			<button
+				id="overlay"
+				class="fixed top-0 right-0 bottom-0 h-full w-full bg-black opacity-75"
+			></button>
+			<div
+				id="modal"
+				class="fixed w-full bg-white m-1 p-4 md:rounded md:shadow-lg"
+			>
+				<div id="modal-inner" class="relative modal-inner">
+					<div id="modal-body"></div>
+					<button id="close-modal" class="absolute right-0 top-0">
+						X
+					</button>
+				</div>
+			</div>
+		</div>
 		<script src="https://unpkg.com/jquery/dist/jquery.min.js"></script>
 		<script src="index.js"></script>
 	</body>

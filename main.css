@@ -1,7 +1,22 @@
-.word:not(:last-child):after {
-	content: ', ';
+:root {
+	--link-color: #ae88ff;
+}
+
+a {
+	color: var(--link-color);
+}
+
+a:hover {
+	text-decoration: underline;
 }
 
 body {
 	background: url('images/seamless-wood-bg.jpg') repeat;
+}
+
+#modal {
+	max-width: 800px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
