@@ -1,5 +1,5 @@
-const WORDNIK_BASE_URL = 'https://api.wordnik.com/v4'
-const WORDNIK_API_KEY = `2338333adb3d0d01ff3610e5b16092bef6bc7f2d26944db8b`
+const API_BASE_URL = 'https://wordsapiv1.p.rapidapi.com'
+const API_KEY = `22e0325feemshced4bcc1ee7fdf7p1f5b15jsn4420e54616f1`
 
 const SORT = {
 	SCORE: 'score',
@@ -57,10 +57,9 @@ function getWordScore(word) {
 }
 
 function createScoreWordList(words) {
-	let wordScores = words.reduce((acc, curr) => {
-		acc.push({ word: curr, score: getWordScore(curr) })
-		return acc
-	}, [])
+	let wordScores = words.map(word => {
+		return { word, score: getWordScore(word) }
+	})
 
 	return wordScores.sort((a, b) => (a.score > b.score ? -1 : 1))
 }
@@ -97,6 +96,61 @@ function updateLoading() {
 	STORE.loadingWords ? $('#loading').show() : $('#loading').hide()
 }
 
+function generateDictionaryDefinitionHTML(word, results) {
+	let output = `<h2 class="text-2xl">${word}</h2>`
+	output += `<ul>`
+	output += results
+		.map((result, index) => {
+			return `<li class="definition-${index}"><span class="partOfSpeech">${result.partOfSpeech}</span> ${result.definition}</li>`
+		})
+		.join('')
+	output += `</ul>`
+
+	return output
+}
+
+function loadDictionaryDefinition(word) {
+	const URL = `${API_BASE_URL}/words/${word}`
+
+	const OPTIONS = {
+		headers: new Headers({
+			'X-RapidAPI-Key': API_KEY,
+			'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
+		})
+	}
+
+	fetch(URL, OPTIONS)
+		.then(res => {
+			if (res.ok) {
+				return res.json()
+			} else if (res.status === 404) {
+				throw new Error(`Sorry, no dictionary results for that word.`)
+			}
+
+			throw new Error(res.statusText)
+		})
+		.then(res => {
+			console.log(res)
+
+			if (res.results === undefined) {
+				throw new Error(`Sorry, no dictionary results for that word.`)
+			}
+
+			// update the modal text
+			const output = generateDictionaryDefinitionHTML(word, res.results)
+			$('#modal-body').html(output)
+		})
+		.catch(e => {
+			console.log('error', e)
+			$('#modal-body').html(`<p class="error">${e.message}</p>`)
+		})
+		.finally(() => {
+			// loading
+			// STORE.loadingDefinition = false
+			// updateLoading()
+		})
+}
+
 function handleSubmit() {
 	$('#query').on('submit', e => {
 		e.preventDefault()
@@ -123,61 +177,20 @@ function handleSubmit() {
 				throw new Error(res.statusText)
 			})
 			.then(res => {
+				console.log('scrabble words', res)
 				const output = generateWordHTML(res)
 				$('#results')
 					.show()
 					.html(output)
 			})
 			.catch(e => {
-				alert(e.message)
+				console.log(e)
 			})
 			.finally(() => {
 				STORE.loadingWords = false
 				updateLoading()
 			})
 	})
-}
-
-function generateDictionaryDefinitionHTML(word, definition) {
-	return `<h2 class="text-2xl">${word}</h2>
-		<p class="mt-4">
-			${definition.text}
-		</p>
-		<a href="${definition.wordnikUrl}" class="block mt-2" target="_blank">View more information at Wordnik</a>`
-}
-
-function loadDictionaryDefinition(word) {
-	const params = {
-		api_key: WORDNIK_API_KEY,
-		useCanonical: true
-	}
-	const URL = `${WORDNIK_BASE_URL}/word.json/${word}/definitions?${$.param(
-		params
-	)}`
-
-	fetch(URL)
-		.then(res => {
-			if (res.ok) {
-				return res.json()
-			}
-
-			throw new Error(res.statusText)
-		})
-		.then(res => {
-			console.log(res)
-
-			// update the modal text
-			const output = generateDictionaryDefinitionHTML(word, res[0])
-			$('#modal-body').html(output)
-		})
-		.catch(e => {
-			$('#modal-body').html(`<p class="error">${e.message}</p>`)
-		})
-		.finally(() => {
-			// loading
-			// STORE.loadingDefinition = false
-			// updateLoading()
-		})
 }
 
 function handleWordClick() {
