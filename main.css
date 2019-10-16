@@ -1,5 +1,5 @@
 :root {
-	--link-color: #ae88ff;
+	--link-color: #5c3da0;
 }
 
 a {
@@ -19,4 +19,13 @@ body {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+}
+
+[data-word] {
+	color: var(--link-color);
+}
+
+[data-word]:hover {
+	text-decoration: underline;
+	cursor: pointer;
 }
