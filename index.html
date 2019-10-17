@@ -40,6 +40,14 @@
 				</button>
 			</form>
 
+			<svg
+				id="results-loader"
+				class="mt-10 w-10 h-10 fill-current text-gray-900 mx-auto"
+				style="display:none;"
+			>
+				<use xlink:href="#loading-icon"></use>
+			</svg>
+
 			<div
 				id="results"
 				class="mt-4 p-4 text-xl bg-white border border-black rounded-lg shadow"
@@ -60,20 +68,126 @@
 				id="modal"
 				class="fixed w-full bg-white p-4 md:rounded md:shadow-lg"
 			>
-				<div id="modal-inner" class="relative modal-inner">
+				<div id="modal-inner" class=" modal-inner">
 					<div id="modal-body" class="text-lg"></div>
-					<button
-						id="close-modal"
-						class="absolute right-0 top-0 hover:text-white hover:bg-gray-900 rounded"
+
+					<svg
+						id="definition-loader"
+						class="mt-10 w-10 h-10 fill-current text-gray-900 mx-auto"
+						style="display:none;"
 					>
-						<svg class="fill-current w-8 h-8" viewbox="0 0 24 24">
-							<path
-								d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
-							/>
-						</svg>
-					</button>
+						<use xlink:href="#loading-icon"></use>
+					</svg>
 				</div>
+				<button
+					id="close-modal"
+					class="absolute right-0 top-0 hover:text-white hover:bg-gray-900 rounded mt-2 mr-2"
+				>
+					<svg class="fill-current w-8 h-8" viewbox="0 0 24 24">
+						<path
+							d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
+						/>
+					</svg>
+				</button>
 			</div>
+		</div>
+		<div style="display:none">
+			<svg
+				id="loading-icon"
+				viewbox="0 0 135 140"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<rect y="10" width="15" height="120" rx="6">
+					<animate
+						attributename="height"
+						begin="0.5s"
+						dur="1s"
+						values="120;110;100;90;80;70;60;50;40;140;120"
+						calcmode="linear"
+						repeatcount="indefinite"
+					/>
+					<animate
+						attributename="y"
+						begin="0.5s"
+						dur="1s"
+						values="10;15;20;25;30;35;40;45;50;0;10"
+						calcmode="linear"
+						repeatcount="indefinite"
+					/>
+				</rect>
+				<rect x="30" y="10" width="15" height="120" rx="6">
+					<animate
+						attributename="height"
+						begin="0.25s"
+						dur="1s"
+						values="120;110;100;90;80;70;60;50;40;140;120"
+						calcmode="linear"
+						repeatcount="indefinite"
+					/>
+					<animate
+						attributename="y"
+						begin="0.25s"
+						dur="1s"
+						values="10;15;20;25;30;35;40;45;50;0;10"
+						calcmode="linear"
+						repeatcount="indefinite"
+					/>
+				</rect>
+				<rect x="60" width="15" height="140" rx="6">
+					<animate
+						attributename="height"
+						begin="0s"
+						dur="1s"
+						values="120;110;100;90;80;70;60;50;40;140;120"
+						calcmode="linear"
+						repeatcount="indefinite"
+					/>
+					<animate
+						attributename="y"
+						begin="0s"
+						dur="1s"
+						values="10;15;20;25;30;35;40;45;50;0;10"
+						calcmode="linear"
+						repeatcount="indefinite"
+					/>
+				</rect>
+				<rect x="90" y="10" width="15" height="120" rx="6">
+					<animate
+						attributename="height"
+						begin="0.25s"
+						dur="1s"
+						values="120;110;100;90;80;70;60;50;40;140;120"
+						calcmode="linear"
+						repeatcount="indefinite"
+					/>
+					<animate
+						attributename="y"
+						begin="0.25s"
+						dur="1s"
+						values="10;15;20;25;30;35;40;45;50;0;10"
+						calcmode="linear"
+						repeatcount="indefinite"
+					/>
+				</rect>
+				<rect x="120" y="10" width="15" height="120" rx="6">
+					<animate
+						attributename="height"
+						begin="0.5s"
+						dur="1s"
+						values="120;110;100;90;80;70;60;50;40;140;120"
+						calcmode="linear"
+						repeatcount="indefinite"
+					/>
+					<animate
+						attributename="y"
+						begin="0.5s"
+						dur="1s"
+						values="10;15;20;25;30;35;40;45;50;0;10"
+						calcmode="linear"
+						repeatcount="indefinite"
+					/>
+				</rect>
+			</svg>
 		</div>
 		<script src="https://unpkg.com/jquery/dist/jquery.min.js"></script>
 		<script src="index.js"></script>

@@ -97,7 +97,13 @@ function generateWordHTML(words) {
 
 // shows/hides loading icon
 function updateLoading() {
-	STORE.loadingWords ? $('#loading').show() : $('#loading').hide()
+	STORE.loadingWords
+		? $('#results-loader').show()
+		: $('#results-loader').hide()
+
+	STORE.loadingDefinition
+		? $('#definition-loader').show()
+		: $('#definition-loader').hide()
 }
 
 function generateDictionaryDefinitionHTML(word, results) {
@@ -165,8 +171,8 @@ function loadDictionaryDefinition(word) {
 		})
 		.finally(() => {
 			// loading
-			// STORE.loadingDefinition = false
-			// updateLoading()
+			STORE.loadingDefinition = false
+			updateLoading()
 		})
 }
 
@@ -219,6 +225,8 @@ function handleWordClick() {
 
 		$('#modal-body').empty()
 		$('#dictionary-modal').show()
+		STORE.loadingDefinition = true
+		updateLoading()
 		loadDictionaryDefinition(word)
 	})
 }
