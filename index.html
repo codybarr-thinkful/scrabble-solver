@@ -6,6 +6,7 @@
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 		<title>Scrabble Solver</title>
 
+		<link rel="shortcut icon" type="image/png" href="favicon.png" />
 		<link
 			href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
 			rel="stylesheet"
@@ -14,13 +15,16 @@
 		<link href="main.css" rel="stylesheet" />
 	</head>
 	<body class="h-full">
-		<main class="p-4">
-			<h1 class="text-5xl bold">Scrabble Solver</h1>
-			<form id="query">
+		<main class="p-4 mx-auto text-center">
+			<h1 class="text-5xl font-bold">Scrabble Solver</h1>
+			<form
+				id="query"
+				class="flex flex-col items-center justify-center px-4"
+			>
 				<input
 					id="letters"
 					type="text"
-					class="border p-2 text-base w-64"
+					class="border p-2 mt-6 text-2xl border-black font-light rounded-lg shadow border focus:outline-none lowercase"
 					minlength="2"
 					maxlength="12"
 					placeholder="Enter letters..."
@@ -29,29 +33,44 @@
 					required
 				/>
 				<button
-					class="mt-2 block p-2 text-white font-bold bg-gray-900 rounded hover:bg-gray-800"
+					class="mt-4 block px-4 py-2 text-white text-xl font-bold bg-gray-900 rounded hover:bg-gray-800"
 					type="submit"
 				>
 					Solve!
 				</button>
 			</form>
 
-			<div id="results" class="mt-2" style="display:none;"></div>
+			<div
+				id="results"
+				class="mt-4 p-4 text-xl bg-white border border-black rounded-lg shadow"
+				style="display:none;"
+			></div>
 		</main>
 
-		<div id="dictionary-modal" style="display:none;">
+		<div
+			id="dictionary-modal"
+			class="h-full w-full md:h-auto md:w-auto"
+			style="display:none;"
+		>
 			<button
 				id="overlay"
 				class="fixed top-0 right-0 bottom-0 h-full w-full bg-black opacity-75"
 			></button>
 			<div
 				id="modal"
-				class="fixed w-full bg-white m-1 p-4 md:rounded md:shadow-lg"
+				class="fixed w-full bg-white p-4 md:rounded md:shadow-lg"
 			>
 				<div id="modal-inner" class="relative modal-inner">
-					<div id="modal-body"></div>
-					<button id="close-modal" class="absolute right-0 top-0">
-						X
+					<div id="modal-body" class="text-lg"></div>
+					<button
+						id="close-modal"
+						class="absolute right-0 top-0 hover:text-white hover:bg-gray-900 rounded"
+					>
+						<svg class="fill-current w-8 h-8" viewbox="0 0 24 24">
+							<path
+								d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
+							/>
+						</svg>
 					</button>
 				</div>
 			</div>

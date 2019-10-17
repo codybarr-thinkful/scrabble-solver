@@ -1,6 +1,21 @@
 :root {
-	--link-color: #5c3da0;
+	--link-color: #ae88ff;
+	--text-muted: #666666;
+	--text-2xl: 1.5rem;
 }
+
+@import url('https://rsms.me/inter/inter.css');
+html {
+	font-family: 'Inter', sans-serif;
+}
+
+@supports (font-variation-settings: normal) {
+	html {
+		font-family: 'Inter var', sans-serif;
+	}
+}
+
+@import url('https://fonts.googleapis.com/css?family=Inconsolata&display=swap');
 
 a {
 	color: var(--link-color);
@@ -10,8 +25,21 @@ a:hover {
 	text-decoration: underline;
 }
 
+h2 {
+	font-size: var(--text-2xl);
+}
+
 body {
 	background: url('images/seamless-wood-bg.jpg') repeat;
+}
+
+main {
+	max-width: 800px;
+}
+
+#letters {
+	width: 100%;
+	max-width: 400px;
 }
 
 #modal {
@@ -22,10 +50,37 @@ body {
 }
 
 [data-word] {
-	color: var(--link-color);
+	display: flex;
+	justify-content: space-between;
+	max-width: 100%;
+	width: 300px;
+	margin-top: 1rem;
+	margin-left: auto;
+	margin-right: auto;
 }
 
-[data-word]:hover {
+.word {
+	font-family: 'Inconsolata', monospace;
+	letter-spacing: 0.05em;
+	line-height: 1.625;
 	text-decoration: underline;
-	cursor: pointer;
+}
+
+.score {
+	color: var(--text-muted);
+}
+
+.label {
+	color: white;
+	background-color: var(--text-muted);
+	text-transform: uppercase;
+	font-size: 0.75rem;
+	border-radius: 9999px;
+	font-weight: bold;
+	display: inline-block;
+	padding: 0.25rem 0.5rem;
+}
+
+[data-word]:hover .word {
+	cursor: hover;
 }

@@ -1,6 +1,10 @@
 const API_BASE_URL = 'https://wordsapiv1.p.rapidapi.com'
 const API_KEY = `22e0325feemshced4bcc1ee7fdf7p1f5b15jsn4420e54616f1`
 
+const ERRORS = {
+	NO_DEFINITION_FOUND: 'NoDefinitionError'
+}
+
 const SORT = {
 	SCORE: 'score',
 	LENGTH: 'length'
@@ -68,7 +72,7 @@ function generateScoreResultsHTML(words) {
 	let wordListWithScores = createScoreWordList(words)
 
 	return wordListWithScores.map(wordAndScore => {
-		return `<div><span data-word="${wordAndScore.word}">${wordAndScore.word}</span> <span>${wordAndScore.score}</span></div>`
+		return `<button data-word="${wordAndScore.word}"><span class="word">${wordAndScore.word}</span> <p class="score flex items-center">${wordAndScore.score} <span class="label ml-2">score</p></button>`
 	})
 }
 
@@ -97,16 +101,23 @@ function updateLoading() {
 }
 
 function generateDictionaryDefinitionHTML(word, results) {
-	let output = `<h2 class="text-2xl">${word}</h2>`
+	let output = `<h2>${word}</h2>`
 	output += `<ul>`
 	output += results
 		.map((result, index) => {
-			return `<li class="definition-${index}"><span class="partOfSpeech">${result.partOfSpeech}</span> ${result.definition}</li>`
+			return `<li class="definition-${index} mt-2"><span class="label mr-2">${result.partOfSpeech}</span> ${result.definition}</li>`
 		})
 		.join('')
 	output += `</ul>`
+	output += `<a href="https://www.wordnik.com/words/${word}" target="_blank" class="inline-block mt-2">More info at Wordnik</a>`
 
 	return output
+}
+
+function throwNoDefinitionFoundError() {
+	let e = new Error(`Sorry, no dictionary results for that word.`)
+	e.name = ERRORS.NO_DEFINITION_FOUND
+	throw e
 }
 
 function loadDictionaryDefinition(word) {
@@ -124,7 +135,7 @@ function loadDictionaryDefinition(word) {
 			if (res.ok) {
 				return res.json()
 			} else if (res.status === 404) {
-				throw new Error(`Sorry, no dictionary results for that word.`)
+				throwNoDefinitionFoundError()
 			}
 
 			throw new Error(res.statusText)
@@ -133,7 +144,7 @@ function loadDictionaryDefinition(word) {
 			console.log(res)
 
 			if (res.results === undefined) {
-				throw new Error(`Sorry, no dictionary results for that word.`)
+				throwNoDefinitionFoundError()
 			}
 
 			// update the modal text
@@ -142,7 +153,15 @@ function loadDictionaryDefinition(word) {
 		})
 		.catch(e => {
 			console.log('error', e)
-			$('#modal-body').html(`<p class="error">${e.message}</p>`)
+			let output = [`<h2>Error</h2>`, `<p class="error">${e.message}</p>`]
+
+			if (e.name === ERRORS.NO_DEFINITION_FOUND) {
+				output.push(
+					`<a href="https://www.wordnik.com/words/${word}" target="_blank">Look for definition on Wordnik</a>`
+				)
+			}
+
+			$('#modal-body').html(output)
 		})
 		.finally(() => {
 			// loading
