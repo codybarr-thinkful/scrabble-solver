@@ -235,6 +235,11 @@ function handleModalDismiss() {
 	})
 
 	// also listen for 'esc' key pressed
+	$('body').keydown(function(event) {
+		if (event.keyCode === 27) {
+			$('#dictionary-modal').hide()
+		}
+	})
 }
 
 $(() => {
