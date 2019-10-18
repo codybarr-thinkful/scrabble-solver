@@ -14,9 +14,13 @@
 
 		<link href="main.css" rel="stylesheet" />
 	</head>
-	<body class="h-full">
+	<body class="min-h-screen flex items-center justify-center">
 		<main class="p-4 mx-auto text-center">
 			<h1 class="text-5xl font-bold">Scrabble Solver</h1>
+			<p class="text-2xl font-light">
+				Search for valid scrabble words, click on resulting words to see
+				their dictionary definitions.
+			</p>
 			<form
 				id="query"
 				class="flex flex-col items-center justify-center px-4"
@@ -52,7 +56,7 @@
 
 			<div
 				id="results-error"
-				class="rounded-lg inline-block mt-10 inline-flex items-center bg-red-600 text-white text-sm font-bold px-4 py-3"
+				class="rounded-lg inline-block text-lg mt-10 inline-flex items-center bg-red-600 text-white text-sm font-bold px-4 py-3"
 				role="alert"
 				style="display:none"
 			>
