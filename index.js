@@ -12,6 +12,10 @@ class NoWordsFoundError extends Error {
 	}
 }
 
+// https://codepen.io/noahblon/pen/yJpXka
+const FOCUSABLE_ELEMENTS =
+	'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]'
+
 const ERRORS = {
 	NO_DEFINITION_FOUND: 'NoDefinitionFoundError',
 	NO_WORDS_FOUND: 'NoWordsFoundError'
@@ -149,6 +153,14 @@ function loadDictionaryDefinition(word) {
 		})
 	}
 
+	$('main')
+		.find(FOCUSABLE_ELEMENTS)
+		.attr('tabindex', '-1')
+	$('#modal-body').empty()
+	$('#dictionary-modal').show()
+	STORE.loadingDefinition = true
+	updateLoading()
+
 	fetch(URL, OPTIONS)
 		.then(res => {
 			if (res.ok) {
@@ -166,6 +178,9 @@ function loadDictionaryDefinition(word) {
 
 			const output = generateDictionaryDefinitionHTML(word, res.results)
 			$('#modal-body').html(output)
+			$('#modal')
+				.find(FOCUSABLE_ELEMENTS)
+				.focus()
 		})
 		.catch(e => {
 			let output = [
@@ -246,12 +261,6 @@ function handleWordClick() {
 	$('#results').on('click', '[data-word]', function() {
 		const word = $(this).data('word')
 
-		$('#modal-body').empty()
-		$('#dictionary-modal').show()
-
-		STORE.loadingDefinition = true
-		updateLoading()
-
 		loadDictionaryDefinition(word)
 	})
 }
@@ -259,17 +268,25 @@ function handleWordClick() {
 function handleModalDismiss() {
 	$('#overlay').on('click', e => {
 		$('#dictionary-modal').hide()
+		restoreFocus()
 	})
 
 	$('button#close-modal').on('click', e => {
 		$('#dictionary-modal').hide()
+		restoreFocus()
 	})
 
 	$('body').on('keydown', e => {
 		if (e.keyCode === 27) {
 			$('#dictionary-modal').hide()
+			restoreFocus()
 		}
 	})
+}
+
+function restoreFocus() {
+	$(FOCUSABLE_ELEMENTS).removeAttr('tabindex')
+	$('#letters').focus()
 }
 
 $(() => {
