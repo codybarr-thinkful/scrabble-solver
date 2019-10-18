@@ -52,7 +52,7 @@ const SCRABBLE_VALUES = {
 }
 
 const STORE = {
-	sort: SORT.SCORE, // default sort is by score
+	sort: SORT.SCORE,
 	loadingWords: false,
 	loadingDefinition: false,
 	words: []
@@ -90,7 +90,6 @@ function generateScoreResultsHTML(words) {
 
 function generateLengthResultsHTML(words) {
 	let wordList = createLengthWordList(words)
-	console.log(wordList)
 	let output = ``
 	Object.keys(wordList)
 		.sort()
@@ -116,7 +115,6 @@ function showAndUpdateResults() {
 	$('#results-list').html(output)
 }
 
-// shows/hides loading icon
 function updateLoading() {
 	STORE.loadingWords
 		? $('#results-loader').show()
@@ -162,8 +160,6 @@ function loadDictionaryDefinition(word) {
 			throw new Error(res.statusText)
 		})
 		.then(res => {
-			console.log(res)
-
 			if (!res.results) {
 				throw new NoDefinitionFoundError()
 			}
@@ -172,7 +168,6 @@ function loadDictionaryDefinition(word) {
 			$('#modal-body').html(output)
 		})
 		.catch(e => {
-			console.log('error', e)
 			let output = [
 				`<h2>Error</h2>`,
 				`<p class="error font-light mt-4">${e.message}</p>`
@@ -208,7 +203,6 @@ function loadWordResults(letters) {
 			showAndUpdateResults()
 		})
 		.catch(e => {
-			console.log(e)
 			$('#results-error p').text(e.message)
 			$('#results-error').show()
 		})
@@ -245,7 +239,6 @@ function handleSortChange() {
 
 		STORE.sort = sort
 		showAndUpdateResults()
-		// console.log('sort: ', sort)
 	})
 }
 
