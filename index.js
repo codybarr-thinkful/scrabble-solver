@@ -2,7 +2,8 @@ const API_BASE_URL = 'https://wordsapiv1.p.rapidapi.com'
 const API_KEY = `22e0325feemshced4bcc1ee7fdf7p1f5b15jsn4420e54616f1`
 
 const ERRORS = {
-	NO_DEFINITION_FOUND: 'NoDefinitionError'
+	NO_DEFINITION_FOUND: 'NoDefinitionError',
+	NO_WORDS_FOUND: 'NoWordsFoundError'
 }
 
 const SORT = {
@@ -120,9 +121,13 @@ function generateDictionaryDefinitionHTML(word, results) {
 	return output
 }
 
-function throwNoDefinitionFoundError() {
-	let e = new Error(`Sorry, no dictionary results for that word.`)
-	e.name = ERRORS.NO_DEFINITION_FOUND
+function throwError(name) {
+	let message = name === ERRORS.NO_DEFINITION_FOUND 
+		? `Sorry, no dictionary results for that word.`
+		: `Sorry, no valid words were found.`
+	
+	let e = new Error(message)
+	e.name = name
 	throw e
 }
 
@@ -141,7 +146,7 @@ function loadDictionaryDefinition(word) {
 			if (res.ok) {
 				return res.json()
 			} else if (res.status === 404) {
-				throwNoDefinitionFoundError()
+				throwError(ERRORS.NO_DEFINITION_FOUND)
 			}
 
 			throw new Error(res.statusText)
@@ -150,7 +155,7 @@ function loadDictionaryDefinition(word) {
 			console.log(res)
 
 			if (res.results === undefined) {
-				throwNoDefinitionFoundError()
+				throwError(ERRORS.NO_DEFINITION_FOUND)
 			}
 
 			// update the modal text
@@ -184,6 +189,9 @@ function handleSubmit() {
 		$('#results')
 			.hide()
 			.empty()
+		
+		// hide error
+		$('#results-error').hide()
 
 		// update loading
 		STORE.loadingWords = true
@@ -203,6 +211,9 @@ function handleSubmit() {
 			})
 			.then(res => {
 				console.log('scrabble words', res)
+
+				if (res.length < 1) throwError(ERRORS.NO_WORDS_FOUND)
+
 				const output = generateWordHTML(res)
 				$('#results')
 					.show()
@@ -210,6 +221,8 @@ function handleSubmit() {
 			})
 			.catch(e => {
 				console.log(e)
+				$('#results-error').show()
+				$('#results-error p').text(e.message)
 			})
 			.finally(() => {
 				STORE.loadingWords = false
