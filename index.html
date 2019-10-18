@@ -27,6 +27,8 @@
 					class="border p-2 mt-6 text-2xl border-black font-light rounded-lg shadow border focus:outline-none lowercase"
 					minlength="2"
 					maxlength="12"
+					pattern="[A-Za-z]+"
+					title="Please only enter letters"
 					placeholder="Enter letters..."
 					autocomplete="off"
 					size="16"
@@ -47,6 +49,13 @@
 			>
 				<use xlink:href="#loading-icon"></use>
 			</svg>
+
+			<div id="results-error" class="rounded-lg inline-block mt-10 inline-flex items-center bg-red-600 text-white text-sm font-bold px-4 py-3" role="alert" style="display:none">
+				<svg class="fill-current w-4 h-4 mr-2" viewBox="0 0 24 24">
+					<path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+				</svg>
+				<p>There was an error</p>
+			</div>
 
 			<div
 				id="results"
