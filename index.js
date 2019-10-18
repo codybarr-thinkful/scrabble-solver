@@ -44,13 +44,13 @@ const STORE = {
 	sort: SORT.SCORE, // default sort is by score
 	loadingWords: false,
 	loadingDefinition: false,
-	results: []
+	words: []
 }
 
 function createLengthWordList(words) {
 	return words.reduce((acc, curr) => {
 		if (!acc[curr.length]) acc[curr.length] = []
-		acc[curr.length].push(curr)
+		acc[curr.length].push({ word: curr, score: getWordScore(curr) })
 		return acc
 	}, {})
 }
@@ -79,21 +79,30 @@ function generateScoreResultsHTML(words) {
 
 function generateLengthResultsHTML(words) {
 	let wordList = createLengthWordList(words)
+	console.log(wordList)
 	let output = ``
-	Object.keys(wordList).forEach(count => {
-		output += `<h3 class="word-length">${count}</h3>`
+	Object.keys(wordList)
+		.sort()
+		.reverse()
+		.forEach(count => {
+			output += `<h3 class="word-length mt-4 inline-block px-3 py-1 bg-gray-900 text-white rounded">${count}</h3>`
 
-		wordList[count].forEach(word => {
-			output += `<span class="word" data-word="${word}">${word}</span>`
+			wordList[count].forEach(wordScore => {
+				output += `<button data-word="${wordScore.word}"><span class="word">${wordScore.word}</span> <p class="score flex items-center">${wordScore.score} <span class="label ml-2">score</p></button>`
+			})
 		})
-	})
 	return output
 }
 
-function generateWordHTML(words) {
-	return STORE.sort === SORT.SCORE
-		? generateScoreResultsHTML(words)
-		: generateLengthResultsHTML(words)
+function showAndUpdateResults() {
+	$('#results').show()
+
+	let output =
+		STORE.sort === SORT.SCORE
+			? generateScoreResultsHTML(STORE.words)
+			: generateLengthResultsHTML(STORE.words)
+
+	$('#results-list').html(output)
 }
 
 // shows/hides loading icon
@@ -122,10 +131,11 @@ function generateDictionaryDefinitionHTML(word, results) {
 }
 
 function throwError(name) {
-	let message = name === ERRORS.NO_DEFINITION_FOUND 
-		? `Sorry, no dictionary results for that word.`
-		: `Sorry, no valid words were found.`
-	
+	let message =
+		name === ERRORS.NO_DEFINITION_FOUND
+			? `Sorry, no dictionary results for that word.`
+			: `Sorry, no valid words were found.`
+
 	let e = new Error(message)
 	e.name = name
 	throw e
@@ -158,7 +168,6 @@ function loadDictionaryDefinition(word) {
 				throwError(ERRORS.NO_DEFINITION_FOUND)
 			}
 
-			// update the modal text
 			const output = generateDictionaryDefinitionHTML(word, res.results)
 			$('#modal-body').html(output)
 		})
@@ -175,8 +184,32 @@ function loadDictionaryDefinition(word) {
 			$('#modal-body').html(output)
 		})
 		.finally(() => {
-			// loading
 			STORE.loadingDefinition = false
+			updateLoading()
+		})
+}
+
+function loadWordResults(letters) {
+	fetch(`https://scrabble.now.sh/api?letters=${letters}`)
+		.then(res => {
+			if (res.ok) {
+				return res.json()
+			}
+
+			throw new Error(res.statusText)
+		})
+		.then(res => {
+			if (res.length < 1) throwError(ERRORS.NO_WORDS_FOUND)
+
+			STORE.words = res
+			showAndUpdateResults()
+		})
+		.catch(e => {
+			$('#results-error p').text(e.message)
+			$('#results-error').show()
+		})
+		.finally(() => {
+			STORE.loadingWords = false
 			updateLoading()
 		})
 }
@@ -185,15 +218,10 @@ function handleSubmit() {
 	$('#query').on('submit', e => {
 		e.preventDefault()
 
-		// empty/hide results
-		$('#results')
-			.hide()
-			.empty()
-		
-		// hide error
+		$('#results').hide()
+		$('#results-list').empty()
 		$('#results-error').hide()
 
-		// update loading
 		STORE.loadingWords = true
 		updateLoading()
 
@@ -201,63 +229,47 @@ function handleSubmit() {
 			.val()
 			.toLowerCase()
 
-		fetch(`https://scrabble.now.sh/api?letters=${letters}`)
-			.then(res => {
-				if (res.ok) {
-					return res.json()
-				}
+		loadWordResults(letters)
+	})
+}
 
-				throw new Error(res.statusText)
-			})
-			.then(res => {
-				console.log('scrabble words', res)
+function handleSortChange() {
+	$('#sort').change(function() {
+		const sort = $(this)
+			.find('option:selected')
+			.val()
 
-				if (res.length < 1) throwError(ERRORS.NO_WORDS_FOUND)
-
-				const output = generateWordHTML(res)
-				$('#results')
-					.show()
-					.html(output)
-			})
-			.catch(e => {
-				console.log(e)
-				$('#results-error').show()
-				$('#results-error p').text(e.message)
-			})
-			.finally(() => {
-				STORE.loadingWords = false
-				updateLoading()
-			})
+		STORE.sort = sort
+		showAndUpdateResults()
+		// console.log('sort: ', sort)
 	})
 }
 
 function handleWordClick() {
 	$('#results').on('click', '[data-word]', function() {
-		console.log($(this).data('word')) // debugging
 		const word = $(this).data('word')
 
 		$('#modal-body').empty()
 		$('#dictionary-modal').show()
+
 		STORE.loadingDefinition = true
 		updateLoading()
+
 		loadDictionaryDefinition(word)
 	})
 }
 
 function handleModalDismiss() {
-	// hides modal when overlay is clicked
 	$('#overlay').on('click', e => {
 		$('#dictionary-modal').hide()
 	})
 
-	// also listen for click of "x" in top right corner of modal
 	$('button#close-modal').on('click', e => {
 		$('#dictionary-modal').hide()
 	})
 
-	// also listen for 'esc' key pressed
-	$('body').keydown(function(event) {
-		if (event.keyCode === 27) {
+	$('body').on('keydown', e => {
+		if (e.keyCode === 27) {
 			$('#dictionary-modal').hide()
 		}
 	})
@@ -265,6 +277,7 @@ function handleModalDismiss() {
 
 $(() => {
 	handleSubmit()
+	handleSortChange()
 	handleWordClick()
 	handleModalDismiss()
 })

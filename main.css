@@ -84,3 +84,7 @@ main {
 [data-word]:hover .word {
 	cursor: hover;
 }
+
+h3.word-length {
+	margin-top: 2rem;
+}
