@@ -1,5 +1,5 @@
 :root {
-	--link-color: #ae88ff;
+	--link-color: #11a0d9;
 	--text-muted: #666666;
 	--text-2xl: 1.5rem;
 }
@@ -30,7 +30,11 @@ h2 {
 }
 
 body {
-	background: url('images/seamless-wood-bg.jpg') repeat;
+	/* background: url('images/seamless-wood-bg.jpg') repeat; */
+	/* background-color: #bfa07a; */
+	color: white;
+	background-image: radial-gradient(circle, #bfa07a, #8a7459);
+	background-attachment: fixed;
 }
 
 main {
@@ -40,6 +44,20 @@ main {
 #letters {
 	width: 100%;
 	max-width: 400px;
+}
+
+button[type='submit'] {
+	background-color: #592a0f;
+	/* background-color: #11a0d9; */
+	color: white;
+	transition: all ease-in-out 0.2s;
+	transform: roate(0turn);
+}
+
+button[type='submit']:hover {
+	background-color: #55c1d9;
+	color: #592a0f;
+	transform: rotate(1turn);
 }
 
 #modal {
@@ -64,6 +82,7 @@ main {
 	letter-spacing: 0.05em;
 	line-height: 1.625;
 	text-decoration: underline;
+	color: var(--link-color);
 }
 
 .score {
@@ -72,7 +91,8 @@ main {
 
 .label {
 	color: white;
-	background-color: var(--text-muted);
+	/* background-color: var(--text-muted); */
+	background-color: #d96277;
 	text-transform: uppercase;
 	font-size: 0.75rem;
 	border-radius: 9999px;
