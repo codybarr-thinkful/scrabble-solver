@@ -1,6 +1,6 @@
 # Scrabble Solver
 
-**Live App**: https://codybarr-thinkful.github.io/scrabble-solver/
+**Live App**: https://scrabble.codybarr.dev/
 
 Simple scrabble solver app with built in dictionary definitions. Allows for sorting by word length and scrabble score.
 
